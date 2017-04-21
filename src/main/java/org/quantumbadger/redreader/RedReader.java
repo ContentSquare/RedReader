@@ -23,6 +23,8 @@ import android.util.Log;
 
 import com.contentsquare.android.ContentSquare;
 
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 import org.quantumbadger.redreader.cache.CacheManager;
 import org.quantumbadger.redreader.common.Alarms;
 import org.quantumbadger.redreader.io.RedditChangeDataIO;
@@ -40,6 +42,7 @@ public class RedReader extends Application {
 	public void onCreate() {
 
 		super.onCreate();
+		Fabric.with(this, new Crashlytics());
 		ContentSquare.startWithProjectId(getApplicationContext(), "redreaderapp");
 
 		Log.i("RedReader", "Application created.");
