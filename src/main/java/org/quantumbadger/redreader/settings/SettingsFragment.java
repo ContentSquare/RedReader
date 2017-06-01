@@ -182,9 +182,9 @@ public final class SettingsFragment extends PreferenceFragment {
 						@Override
 						public void run() {
 							TorCommon.updateTorStatus(context);
-							if(TorCommon.isTorEnabled() != Boolean.TRUE.equals(newValue)) {
-								throw new RuntimeException("Tor not correctly enabled after preference change");
-							}
+//							if(TorCommon.isTorEnabled() != Boolean.TRUE.equals(newValue)) {
+//								throw new RuntimeException("Tor not correctly enabled after preference change");
+//							}
 						}
 					});
 
