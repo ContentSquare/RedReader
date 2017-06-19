@@ -18,13 +18,12 @@
 package org.quantumbadger.redreader;
 
 import android.app.Application;
+import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 
-import com.contentsquare.android.ContentSquare;
-
 import com.crashlytics.android.Crashlytics;
-import io.fabric.sdk.android.Fabric;
+
 import org.quantumbadger.redreader.cache.CacheManager;
 import org.quantumbadger.redreader.common.Alarms;
 import org.quantumbadger.redreader.io.RedditChangeDataIO;
@@ -36,6 +35,8 @@ import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.util.UUID;
 
+import io.fabric.sdk.android.Fabric;
+
 public class RedReader extends Application {
 
 	@Override
@@ -43,11 +44,11 @@ public class RedReader extends Application {
 
 		super.onCreate();
 		Fabric.with(this, new Crashlytics());
-		ContentSquare.startWithProjectId(getApplicationContext(), "redreaderapp");
+//		ContentSquare.startWithProjectId(getApplicationContext(), "redreaderapp");
+//		Log.i("RedReader", "Application created.");
 
-		Log.i("RedReader", "Application created.");
-
-		final Thread.UncaughtExceptionHandler androidHandler = Thread.getDefaultUncaughtExceptionHandler();
+		final Thread.UncaughtExceptionHandler androidHandler =
+				Thread.getDefaultUncaughtExceptionHandler();
 
 		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
 			public void uncaughtException(Thread thread, Throwable t) {
@@ -57,17 +58,19 @@ public class RedReader extends Application {
 
 					File dir = Environment.getExternalStorageDirectory();
 
-					if(dir == null) {
+					if (dir == null) {
 						dir = Environment.getDataDirectory();
 					}
 
-					final FileOutputStream fos = new FileOutputStream(new File(dir, "redreader_crash_log_" + UUID.randomUUID().toString() + ".txt"));
+					final FileOutputStream fos = new FileOutputStream(new File(dir,
+							"redreader_crash_log_" + UUID.randomUUID().toString() + ".txt"));
 					final PrintWriter pw = new PrintWriter(fos);
 					t.printStackTrace(pw);
 					pw.flush();
 					pw.close();
 
-				} catch(Throwable t1) {}
+				} catch (Throwable t1) {
+				}
 
 				androidHandler.uncaughtException(thread, t);
 			}
@@ -81,7 +84,8 @@ public class RedReader extends Application {
 			@Override
 			public void run() {
 
-				android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
+				android.os.Process.setThreadPriority(android.os.Process
+						.THREAD_PRIORITY_BACKGROUND);
 
 				cm.pruneCache(); // Hope for the best :)
 			}
