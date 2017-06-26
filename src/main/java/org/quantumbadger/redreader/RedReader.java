@@ -18,9 +18,7 @@
 package org.quantumbadger.redreader;
 
 import android.app.Application;
-import android.os.Build;
 import android.os.Environment;
-import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 
@@ -44,7 +42,7 @@ public class RedReader extends Application {
 
 		super.onCreate();
 		Fabric.with(this, new Crashlytics());
-//		ContentSquare.startWithProjectId(getApplicationContext(), "redreaderapp");
+//		ContentSquare.startWithProjectId(getApplicationContexlt(), "redreaderapp");
 //		Log.i("RedReader", "Application created.");
 
 		final Thread.UncaughtExceptionHandler androidHandler =
