@@ -39,24 +39,24 @@ dependencies {
 }
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion rootProject.compileSdkVersion
     buildToolsVersion rootProject.buildToolsVersion
 
-	signingConfigs {
-		release {
-			storeFile file("${rootDir}/config/keystore/shared-keystore.jks")
-			storePassword "Weballwin"
-			keyAlias "Jenkins"
-			keyPassword "Weballwin"
-		}
-	}
-	buildTypes {
-		release {
-			signingConfig signingConfigs.release
-			minifyEnabled true
-			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-		}
-	}
+    signingConfigs {
+        release {
+            storeFile file("${rootDir}/config/keystore/shared-keystore.jks")
+            storePassword "Weballwin"
+            keyAlias "Jenkins"
+            keyPassword "Weballwin"
+        }
+    }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
 
     defaultConfig {
         vectorDrawables.generatedDensities = ['mdpi', 'hdpi', 'xhdpi', 'xxhdpi', 'xxxhdpi']
