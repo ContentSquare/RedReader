@@ -42,6 +42,7 @@ public class RedReader extends Application {
 
 		super.onCreate();
 		Fabric.with(this, new Crashlytics());
+
 //		ContentSquare.startWithProjectId(getApplicationContexlt(), "redreaderapp");
 //		Log.i("RedReader", "Application created.");
 
