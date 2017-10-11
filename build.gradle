@@ -1,11 +1,12 @@
 buildscript {
     repositories {
         jcenter()
+		google()
         maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:${pluginVersion}"
-        classpath "io.fabric.tools:gradle:${fabricPluginVersion}"
+		classpath "com.android.tools.build:gradle:${pluginVersion}"
+		classpath "io.fabric.tools:gradle:${fabricPluginVersion}"
     }
 }
 
@@ -20,8 +21,7 @@ repositories {
 
 dependencies {
 
-	debugCompile project(path: ':library', configuration: "debug")
-	releaseCompile project(path: ':library', configuration: "release")
+	implementation project(':library')
 
 	compile "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
 	compile "org.apache.commons:commons-lang3:${apacheCommonsVersion}"
