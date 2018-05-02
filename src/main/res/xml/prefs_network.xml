@@ -25,6 +25,14 @@
         android:key="@string/pref_network_tor_key"
         android:defaultValue="false"/>
 
+	<SwitchPreference android:title="@string/pref_network_gdpr_title"
+		android:key="@string/pref_network_gdpr_key"
+		android:defaultValue="false"/>
+
+	<CheckBoxPreference android:title="@string/pref_network_forgetme_title"
+		android:key="@string/pref_network_forgetme_key"
+		android:defaultValue="false"/>
+
     </PreferenceCategory>
 
 </PreferenceScreen>

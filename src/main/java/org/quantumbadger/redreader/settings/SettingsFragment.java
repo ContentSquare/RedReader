@@ -32,6 +32,9 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.text.Html;
+
+import com.contentsquare.android.ContentSquare;
+
 import org.quantumbadger.redreader.BuildConfig;
 import org.quantumbadger.redreader.R;
 import org.quantumbadger.redreader.activities.ChangelogActivity;
@@ -103,31 +106,37 @@ public final class SettingsFragment extends PreferenceFragment {
 				R.string.pref_behaviour_comment_min_key
 		};
 
-		for(int pref : listPrefsToUpdate) {
+		for (int pref : listPrefsToUpdate) {
 
-			final ListPreference listPreference = (ListPreference)findPreference(getString(pref));
+			final ListPreference listPreference = (ListPreference) findPreference(getString(pref));
 
-			if(listPreference == null) continue;
+			if (listPreference == null) {
+				continue;
+			}
 
 			final int index = listPreference.findIndexOfValue(listPreference.getValue());
-			if(index < 0) continue;
+			if (index < 0) {
+				continue;
+			}
 
 			listPreference.setSummary(listPreference.getEntries()[index]);
 
 			listPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					final int index = listPreference.findIndexOfValue((String)newValue);
+					final int index = listPreference.findIndexOfValue((String) newValue);
 					listPreference.setSummary(listPreference.getEntries()[index]);
 					return true;
 				}
 			});
 		}
 
-		for(final int pref : editTextPrefsToUpdate) {
+		for (final int pref : editTextPrefsToUpdate) {
 
-			final EditTextPreference editTextPreference = (EditTextPreference)findPreference(getString(pref));
+			final EditTextPreference editTextPreference = (EditTextPreference) findPreference(getString(pref));
 
-			if(editTextPreference == null) continue;
+			if (editTextPreference == null) {
+				continue;
+			}
 
 			editTextPreference.setSummary(editTextPreference.getText());
 
@@ -135,7 +144,7 @@ public final class SettingsFragment extends PreferenceFragment {
 
 				@Override
 				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					if(newValue != null) {
+					if (newValue != null) {
 						editTextPreference.setSummary(newValue.toString());
 					} else {
 						editTextPreference.setSummary("(null)");
@@ -149,20 +158,23 @@ public final class SettingsFragment extends PreferenceFragment {
 		final Preference versionPref = findPreference(getString(R.string.pref_about_version_key));
 		final Preference changelogPref = findPreference(getString(R.string.pref_about_changelog_key));
 		final Preference torPref = findPreference(getString(R.string.pref_network_tor_key));
+		final Preference gdprPref = findPreference(getString(R.string.pref_network_gdpr_key));
+		final Preference forgetmePref = findPreference(getString(R.string
+				.pref_network_forgetme_key));
 
 		final PackageInfo pInfo;
 
 		try {
 			pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-		} catch(PackageManager.NameNotFoundException e) {
+		} catch (PackageManager.NameNotFoundException e) {
 			throw new RuntimeException(e);
 		}
 
-		if(versionPref != null) {
+		if (versionPref != null) {
 			versionPref.setSummary(pInfo.versionName);
 		}
 
-		if(changelogPref != null) {
+		if (changelogPref != null) {
 			changelogPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 				public boolean onPreferenceClick(Preference preference) {
 					final Intent intent = new Intent(context, ChangelogActivity.class);
@@ -172,7 +184,7 @@ public final class SettingsFragment extends PreferenceFragment {
 			});
 		}
 
-		if(torPref != null) {
+		if (torPref != null) {
 			torPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 				@Override
 				public boolean onPreferenceChange(Preference preference, final Object newValue) {
@@ -193,10 +205,39 @@ public final class SettingsFragment extends PreferenceFragment {
 			});
 		}
 
-		if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+		if (gdprPref != null) {
+			gdprPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+				@Override
+				public boolean onPreferenceChange(Preference preference, final Object newValue) {
+
+					boolean isOptedOut = (Boolean) newValue;
+					if (isOptedOut) {
+						ContentSquare.optOut(getActivity());
+					} else {
+						ContentSquare.optIn(getActivity());
+					}
+
+					return true;
+				}
+			});
+		}
+
+		if (forgetmePref != null) {
+			forgetmePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+				@Override
+				public boolean onPreferenceChange(Preference preference, final Object newValue) {
+
+					ContentSquare.forgetMe(getActivity());
+
+					return true;
+				}
+			});
+		}
+
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
 			final Preference pref = findPreference(getString(R.string.pref_appearance_navbar_color_key));
 
-			if(pref != null) {
+			if (pref != null) {
 				pref.setEnabled(false);
 				pref.setSummary(R.string.pref_not_supported_before_lollipop);
 			}

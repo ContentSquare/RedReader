@@ -758,6 +758,12 @@
     <string name="pref_network_tor_title">Use TOR (experimental)</string>
     <string name="pref_network_tor_key">pref_network_tor</string>
 
+	<string name="pref_network_gdpr_title">OptOut GDPR from CS</string>
+	<string name="pref_network_gdpr_key">pref_network_gdpr</string>
+
+	<string name="pref_network_forgetme_title">Forget Me CS</string>
+	<string name="pref_network_forgetme_key">pref_network_forgetme</string>
+
     <!-- 2016-04-03 -->
     <string name="error_tor_not_installed">Tor will not work unless Orbot is installed. Install now?</string>
     <string name="error_tor_setting_failed">Failed to set proxy.</string>
