@@ -161,6 +161,8 @@ public final class SettingsFragment extends PreferenceFragment {
 		final Preference gdprPref = findPreference(getString(R.string.pref_network_gdpr_key));
 		final Preference forgetmePref = findPreference(getString(R.string
 				.pref_network_forgetme_key));
+		final Preference getUserIdPref = findPreference(getString(R.string
+				.pref_network_getID_key));
 
 		final PackageInfo pInfo;
 
@@ -233,6 +235,18 @@ public final class SettingsFragment extends PreferenceFragment {
 				}
 			});
 		}
+
+		if (getUserIdPref != null) {
+			getUserIdPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+				@Override
+				public boolean onPreferenceClick(Preference preference) {
+
+					getUserIdPref.setTitle(ContentSquare.getUserId());
+					return false;
+				}
+			});
+		}
+
 
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
 			final Preference pref = findPreference(getString(R.string.pref_appearance_navbar_color_key));

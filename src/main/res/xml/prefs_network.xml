@@ -33,6 +33,13 @@
 		android:key="@string/pref_network_forgetme_key"
 		android:defaultValue="false"/>
 
-    </PreferenceCategory>
+	<EditTextPreference
+		android:defaultValue="CS User ID"
+		android:key="@string/pref_network_getID_key"
+		android:selectAllOnFocus="true"
+		android:singleLine="true"
+		android:title="@string/pref_network_getID_title"/>
+
+	</PreferenceCategory>
 
 </PreferenceScreen>
