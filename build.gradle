@@ -1,12 +1,12 @@
 buildscript {
     repositories {
         jcenter()
-		google()
+        google()
         maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
-		classpath 'com.android.tools.build:gradle:3.1.2'
-		classpath "io.fabric.tools:gradle:${fabricPluginVersion}"
+        classpath 'com.android.tools.build:gradle:3.1.2'
+        classpath "io.fabric.tools:gradle:${fabricPluginVersion}"
     }
 }
 
@@ -21,7 +21,7 @@ repositories {
 
 dependencies {
 
-	implementation project(':library')
+    implementation project(':library')
 
     implementation "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
     implementation "org.apache.commons:commons-lang3:${apacheCommonsVersion}"
@@ -53,7 +53,7 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.release
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -79,7 +79,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
     }
-    
+
     lintOptions {
         checkReleaseBuilds false
         abortOnError false
