@@ -1,13 +1,13 @@
 buildscript {
-    repositories {
-        jcenter()
-        google()
-        maven { url 'https://maven.fabric.io/public' }
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.2'
-        classpath "io.fabric.tools:gradle:${fabricPluginVersion}"
-    }
+	repositories {
+		jcenter()
+		google()
+		maven { url 'https://maven.fabric.io/public' }
+	}
+	dependencies {
+		classpath 'com.android.tools.build:gradle:3.1.2'
+		classpath "io.fabric.tools:gradle:${fabricPluginVersion}"
+	}
 }
 
 apply plugin: 'com.android.application'
@@ -15,94 +15,102 @@ apply plugin: 'io.fabric'
 apply plugin: 'pmd'
 
 repositories {
-    jcenter()
-    maven { url 'https://maven.fabric.io/public' }
+	jcenter()
+	maven { url 'https://maven.fabric.io/public' }
 }
 
 dependencies {
 
-    implementation project(':library')
+	implementation project(':library')
 
-    implementation "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
-    implementation "org.apache.commons:commons-lang3:${apacheCommonsVersion}"
-    implementation "joda-time:joda-time:${jodaTimeVersion}"
-    implementation "com.android.support:appcompat-v7:${supportLibVersion}"
-    implementation "com.android.support:recyclerview-v7:${supportLibVersion}"
-    implementation "com.android.support:design:${supportLibVersion}"
-    implementation "com.squareup.okhttp:okhttp:${okHttpVersion}"
-    implementation "info.guardianproject.netcipher:netcipher:${netCipherVersion}"
+	implementation "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
+	implementation "org.apache.commons:commons-lang3:${apacheCommonsVersion}"
+	implementation "joda-time:joda-time:${jodaTimeVersion}"
+	implementation "com.android.support:appcompat-v7:${supportLibVersion}"
+	implementation "com.android.support:recyclerview-v7:${supportLibVersion}"
+	implementation "com.android.support:design:${supportLibVersion}"
+	implementation "com.squareup.okhttp:okhttp:${okHttpVersion}"
+	implementation "info.guardianproject.netcipher:netcipher:${netCipherVersion}"
 
-    testImplementation "junit:junit:${jUnitVersion}"
-    implementation("com.crashlytics.sdk.android:crashlytics:${crashlyticsVersion}@aar") {
-        transitive = true;
-    }
+	testImplementation "junit:junit:${jUnitVersion}"
+	implementation("com.crashlytics.sdk.android:crashlytics:${crashlyticsVersion}@aar") {
+		transitive = true;
+	}
 }
 
 android {
-    compileSdkVersion rootProject.compileSdkVersion
-    buildToolsVersion rootProject.buildToolsVersion
+	compileSdkVersion rootProject.compileSdkVersion
+	buildToolsVersion rootProject.buildToolsVersion
 
-    signingConfigs {
-        release {
-            storeFile file("${rootDir}/config/keystore/shared-keystore.jks")
-            storePassword "Weballwin"
-            keyAlias "Jenkins"
-            keyPassword "Weballwin"
-        }
-    }
-    buildTypes {
-        release {
-            signingConfig signingConfigs.release
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
+	signingConfigs {
+		release {
+			storeFile file("${rootDir}/config/keystore/shared-keystore.jks")
+			storePassword "Weballwin"
+			keyAlias "Jenkins"
+			keyPassword "Weballwin"
+		}
+	}
+	buildTypes {
+		release {
+			signingConfig signingConfigs.release
+			minifyEnabled false
+			proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+		}
+	}
 
-    defaultConfig {
-        vectorDrawables.generatedDensities = ['mdpi', 'hdpi', 'xhdpi', 'xxhdpi', 'xxxhdpi']
-    }
-    // Flag to tell aapt to keep the attribute ids around
-    aaptOptions {
-        additionalParameters "--no-version-vectors"
-    }
+	defaultConfig {
+		minSdkVersion 16
+		targetSdkVersion 26
+		vectorDrawables.generatedDensities = ['mdpi', 'hdpi', 'xhdpi', 'xxhdpi', 'xxxhdpi']
+	}
+	// Flag to tell aapt to keep the attribute ids around
+	aaptOptions {
+		additionalParameters "--no-version-vectors"
+	}
 
-    compileOptions {
-        compileOptions.encoding = "UTF-8"
+	buildTypes {
+		release {
+			minifyEnabled true
+		}
+	}
 
-        // Use Java 1.7, requires minSdk 8
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
-    }
+	compileOptions {
+		compileOptions.encoding = "UTF-8"
 
-    lintOptions {
-        checkReleaseBuilds false
-        abortOnError false
+		// Use Java 1.7, requires minSdk 8
+		sourceCompatibility JavaVersion.VERSION_1_7
+		targetCompatibility JavaVersion.VERSION_1_7
+	}
 
-        // Translations are crowd-sourced
-        disable 'MissingTranslation'
-    }
+	lintOptions {
+		checkReleaseBuilds false
+		abortOnError false
 
-    packagingOptions {
-        exclude 'META-INF/LICENSE.txt'
-        exclude 'META-INF/NOTICE.txt'
-    }
+		// Translations are crowd-sourced
+		disable 'MissingTranslation'
+	}
 
-    sourceSets {
-        main {
-            assets.srcDirs = ['assets']
-        }
-    }
+	packagingOptions {
+		exclude 'META-INF/LICENSE.txt'
+		exclude 'META-INF/NOTICE.txt'
+	}
+
+	sourceSets {
+		main {
+			assets.srcDirs = ['assets']
+		}
+	}
 }
 
 pmd {
-    toolVersion = pmdVersion
-    consoleOutput = true
+	toolVersion = pmdVersion
+	consoleOutput = true
 }
 
 task pmd(type: Pmd) {
-    dependsOn 'assembleDebug'
-    ruleSetFiles = files("${project.rootDir}/config/pmd/rules.xml")
-    ruleSets = [] // otherwise defaults clash with the list in rules.xml
-    source 'src/main/java/org/quantumbadger'
-    include '**/*.java'
+	dependsOn 'assembleDebug'
+	ruleSetFiles = files("${project.rootDir}/config/pmd/rules.xml")
+	ruleSets = [] // otherwise defaults clash with the list in rules.xml
+	source 'src/main/java/org/quantumbadger'
+	include '**/*.java'
 }
