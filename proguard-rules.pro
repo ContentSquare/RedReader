@@ -26,6 +26,8 @@
 -keep class org.joda.** { *; }
 -dontwarn org.joda.**
 
+-keep class org.quantumbadger.** { *; }
+
 -keepclasseswithmembernames class * {
     native <methods>;
 }
