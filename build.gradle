@@ -40,7 +40,6 @@ dependencies {
 
 android {
 	compileSdkVersion rootProject.compileSdkVersion
-	buildToolsVersion rootProject.buildToolsVersion
 
 	signingConfigs {
 		release {
