@@ -229,7 +229,7 @@ public final class SettingsFragment extends PreferenceFragment {
 				@Override
 				public boolean onPreferenceChange(Preference preference, final Object newValue) {
 
-					ContentSquare.forgetMe(getActivity());
+					ContentSquare.forgetMe();
 
 					return true;
 				}
