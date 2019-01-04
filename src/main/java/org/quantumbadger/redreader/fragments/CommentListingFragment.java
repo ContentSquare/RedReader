@@ -23,10 +23,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,6 +30,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
 import org.quantumbadger.redreader.R;
 import org.quantumbadger.redreader.account.RedditAccount;
 import org.quantumbadger.redreader.account.RedditAccountManager;
@@ -69,6 +66,11 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.UUID;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 public class CommentListingFragment extends RRFragment
 		implements RedditPostView.PostSelectionListener,
 		RedditCommentView.CommentListener,
@@ -81,19 +83,13 @@ public class CommentListingFragment extends RRFragment
 	private final LinkedList<RedditURLParser.RedditURL> mUrlsToDownload;
 	private final UUID mSession;
 	private final DownloadStrategy mDownloadStrategy;
-
-	private RedditPreparedPost mPost = null;
-	private boolean isArchived;
-
 	private final FilteredCommentListingManager mCommentListingManager;
-
 	private final RecyclerView mRecyclerView;
-
 	private final FrameLayout mOuterFrame;
-
 	private final float mCommentFontScale;
 	private final boolean mShowLinkButtons;
-
+	private RedditPreparedPost mPost = null;
+	private boolean isArchived;
 	private Long mCachedTimestamp = null;
 
 	private Integer mPreviousFirstVisibleItemPosition;
@@ -108,8 +104,9 @@ public class CommentListingFragment extends RRFragment
 
 		super(parent, savedInstanceState);
 
-		if(savedInstanceState != null) {
-			mPreviousFirstVisibleItemPosition = savedInstanceState.getInt(SAVEDSTATE_FIRST_VISIBLE_POS);
+		if (savedInstanceState != null) {
+			mPreviousFirstVisibleItemPosition = savedInstanceState.getInt(
+					SAVEDSTATE_FIRST_VISIBLE_POS);
 		}
 
 		mCommentListingManager = new FilteredCommentListingManager(parent, searchString);
@@ -119,7 +116,7 @@ public class CommentListingFragment extends RRFragment
 
 		this.mSession = session;
 
-		if(forceDownload) {
+		if (forceDownload) {
 			mDownloadStrategy = DownloadStrategyAlways.INSTANCE;
 
 		} else {
@@ -141,19 +138,20 @@ public class CommentListingFragment extends RRFragment
 		final ScrollbarRecyclerViewManager recyclerViewManager
 				= new ScrollbarRecyclerViewManager(context, null, false);
 
-		if(parent instanceof OptionsMenuUtility.OptionsMenuCommentsListener
+		if (parent instanceof OptionsMenuUtility.OptionsMenuCommentsListener
 				&& PrefsUtility.pref_behaviour_enable_swipe_refresh(context, prefs)) {
 
 			recyclerViewManager.enablePullToRefresh(new SwipeRefreshLayout.OnRefreshListener() {
 				@Override
 				public void onRefresh() {
-					((OptionsMenuUtility.OptionsMenuCommentsListener)parent).onRefreshComments();
+					((OptionsMenuUtility.OptionsMenuCommentsListener) parent).onRefreshComments();
 				}
 			});
 		}
 
 		mRecyclerView = recyclerViewManager.getRecyclerView();
-		mCommentListingManager.setLayoutManager((LinearLayoutManager) mRecyclerView.getLayoutManager());
+		mCommentListingManager.setLayoutManager(
+				(LinearLayoutManager) mRecyclerView.getLayoutManager());
 
 		mRecyclerView.setAdapter(mCommentListingManager.getAdapter());
 		mOuterFrame.addView(recyclerViewManager.getOuterView());
@@ -172,47 +170,55 @@ public class CommentListingFragment extends RRFragment
 
 		final SideToolbarOverlay toolbarOverlay = new SideToolbarOverlay(context);
 
-		final BezelSwipeOverlay bezelOverlay = new BezelSwipeOverlay(context, new BezelSwipeOverlay.BezelSwipeListener() {
-			@Override
-			public boolean onSwipe(@BezelSwipeOverlay.SwipeEdge int edge) {
+		final BezelSwipeOverlay bezelOverlay = new BezelSwipeOverlay(context,
+				new BezelSwipeOverlay.BezelSwipeListener() {
+					@Override
+					public boolean onSwipe(@BezelSwipeOverlay.SwipeEdge int edge) {
 
-				if(mPost == null) return false;
+						if (mPost == null) return false;
 
-				toolbarOverlay.setContents(mPost.generateToolbar(getActivity(), true, toolbarOverlay));
-				toolbarOverlay.show(edge == BezelSwipeOverlay.LEFT ?
-						SideToolbarOverlay.SideToolbarPosition.LEFT : SideToolbarOverlay.SideToolbarPosition.RIGHT);
-				return true;
-			}
+						toolbarOverlay.setContents(
+								mPost.generateToolbar(getActivity(), true, toolbarOverlay));
+						toolbarOverlay.show(edge == BezelSwipeOverlay.LEFT ?
+								SideToolbarOverlay.SideToolbarPosition.LEFT
+								: SideToolbarOverlay.SideToolbarPosition.RIGHT);
+						return true;
+					}
 
-			public boolean onTap() {
+					public boolean onTap() {
 
-				if(toolbarOverlay.isShown()) {
-					toolbarOverlay.hide();
-					return true;
-				}
+						if (toolbarOverlay.isShown()) {
+							toolbarOverlay.hide();
+							return true;
+						}
 
-				return false;
-			}
-		});
+						return false;
+					}
+				});
 
 		mOuterFrame.addView(bezelOverlay);
 		mOuterFrame.addView(toolbarOverlay);
 
-		bezelOverlay.getLayoutParams().width = android.widget.FrameLayout.LayoutParams.MATCH_PARENT;
-		bezelOverlay.getLayoutParams().height = android.widget.FrameLayout.LayoutParams.MATCH_PARENT;
+		bezelOverlay.getLayoutParams().width = android.widget.FrameLayout.LayoutParams
+				.MATCH_PARENT;
+		bezelOverlay.getLayoutParams().height =
+				android.widget.FrameLayout.LayoutParams.MATCH_PARENT;
 
-		toolbarOverlay.getLayoutParams().width = android.widget.FrameLayout.LayoutParams.MATCH_PARENT;
-		toolbarOverlay.getLayoutParams().height = android.widget.FrameLayout.LayoutParams.MATCH_PARENT;
+		toolbarOverlay.getLayoutParams().width =
+				android.widget.FrameLayout.LayoutParams.MATCH_PARENT;
+		toolbarOverlay.getLayoutParams().height =
+				android.widget.FrameLayout.LayoutParams.MATCH_PARENT;
 
 		makeNextRequest(context);
 	}
 
 	public void handleCommentVisibilityToggle(final RedditCommentView view) {
 
-		final RedditChangeDataManager changeDataManager = RedditChangeDataManager.getInstance(mUser);
+		final RedditChangeDataManager changeDataManager = RedditChangeDataManager.getInstance(
+				mUser);
 		final RedditCommentListItem item = view.getComment();
 
-		if(item.isComment()) {
+		if (item.isComment()) {
 
 			final RedditRenderableComment comment = item.asComment();
 
@@ -223,10 +229,11 @@ public class CommentListingFragment extends RRFragment
 
 			mCommentListingManager.updateHiddenStatus();
 
-			final LinearLayoutManager layoutManager = (LinearLayoutManager)mRecyclerView.getLayoutManager();
+			final LinearLayoutManager layoutManager =
+					(LinearLayoutManager) mRecyclerView.getLayoutManager();
 			final int position = layoutManager.getPosition(view);
 
-			if(position == layoutManager.findFirstVisibleItemPosition()) {
+			if (position == layoutManager.findFirstVisibleItemPosition()) {
 				layoutManager.scrollToPositionWithOffset(position, 0);
 			}
 		}
@@ -242,7 +249,8 @@ public class CommentListingFragment extends RRFragment
 
 		final Bundle bundle = new Bundle();
 
-		final LinearLayoutManager layoutManager = (LinearLayoutManager)mRecyclerView.getLayoutManager();
+		final LinearLayoutManager layoutManager =
+				(LinearLayoutManager) mRecyclerView.getLayoutManager();
 		bundle.putInt(SAVEDSTATE_FIRST_VISIBLE_POS, layoutManager.findFirstVisibleItemPosition());
 
 		return bundle;
@@ -251,7 +259,7 @@ public class CommentListingFragment extends RRFragment
 	@SuppressLint("WrongConstant")
 	private void makeNextRequest(final Context context) {
 
-		if(!mUrlsToDownload.isEmpty()) {
+		if (!mUrlsToDownload.isEmpty()) {
 			new CommentListingRequest(
 					context,
 					this,
@@ -269,7 +277,7 @@ public class CommentListingFragment extends RRFragment
 
 	@Override
 	public void onCommentClicked(final RedditCommentView view) {
-		switch(PrefsUtility.pref_behaviour_actions_comment_tap(
+		switch (PrefsUtility.pref_behaviour_actions_comment_tap(
 				getActivity(),
 				PreferenceManager.getDefaultSharedPreferences(getActivity()))) {
 
@@ -279,7 +287,7 @@ public class CommentListingFragment extends RRFragment
 
 			case ACTION_MENU: {
 				final RedditCommentListItem item = view.getComment();
-				if(item != null && item.isComment()) {
+				if (item != null && item.isComment()) {
 					RedditAPICommentAction.showActionMenu(
 							getActivity(),
 							this,
@@ -295,20 +303,20 @@ public class CommentListingFragment extends RRFragment
 
 	@Override
 	public void onCommentLongClicked(final RedditCommentView view) {
-		switch(PrefsUtility.pref_behaviour_actions_comment_longclick(
-			getActivity(),
-			PreferenceManager.getDefaultSharedPreferences(getActivity()))) {
+		switch (PrefsUtility.pref_behaviour_actions_comment_longclick(
+				getActivity(),
+				PreferenceManager.getDefaultSharedPreferences(getActivity()))) {
 
-			case ACTION_MENU:{
+			case ACTION_MENU: {
 				final RedditCommentListItem item = view.getComment();
-				if(item != null && item.isComment()) {
+				if (item != null && item.isComment()) {
 					RedditAPICommentAction.showActionMenu(
-						getActivity(),
-						this,
-						item.asComment(),
-						view,
-						RedditChangeDataManager.getInstance(mUser),
-						isArchived);
+							getActivity(),
+							this,
+							item.asComment(),
+							view,
+							RedditChangeDataManager.getInstance(mUser),
+							isArchived);
 				}
 				break;
 			}
@@ -328,7 +336,8 @@ public class CommentListingFragment extends RRFragment
 	}
 
 	@Override
-	public void onCommentListingRequestDownloadStarted() {}
+	public void onCommentListingRequestDownloadStarted() {
+	}
 
 	@Override
 	public void onCommentListingRequestException(final Throwable t) {
@@ -362,7 +371,7 @@ public class CommentListingFragment extends RRFragment
 
 		final Context context = getActivity();
 
-		if(mPost == null) {
+		if (mPost == null) {
 
 			final RRThemeAttributes attr = new RRThemeAttributes(context);
 
@@ -374,11 +383,13 @@ public class CommentListingFragment extends RRFragment
 					this.mPost);
 
 			mCommentListingManager.addPostHeader(postHeader);
-			((LinearLayoutManager)mRecyclerView.getLayoutManager()).scrollToPositionWithOffset(0, 0);
+			((LinearLayoutManager) mRecyclerView.getLayoutManager()).scrollToPositionWithOffset(0,
+					0);
 
-			if(post.src.getSelfText() != null) {
+			if (post.src.getSelfText() != null) {
 				final ViewGroup selfText = post.src.getSelfText().buildView(
-						getActivity(), attr.rrMainTextCol, 14f * mCommentFontScale, mShowLinkButtons);
+						getActivity(), attr.rrMainTextCol, 14f * mCommentFontScale,
+						mShowLinkButtons);
 				selfText.setFocusable(false);
 				selfText.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
 
@@ -392,19 +403,20 @@ public class CommentListingFragment extends RRFragment
 				mCommentListingManager.addPostSelfText(paddingLayout);
 			}
 
-			if(!General.isTablet(context, PreferenceManager.getDefaultSharedPreferences(context))) {
+			if (!General.isTablet(context,
+					PreferenceManager.getDefaultSharedPreferences(context))) {
 				getActivity().setTitle(post.src.getTitle());
 			}
 
 			if (mCommentListingManager.isSearchListing()) {
-				final CommentSubThreadView searchCommentThreadView= new CommentSubThreadView(
+				final CommentSubThreadView searchCommentThreadView = new CommentSubThreadView(
 						getActivity(),
 						mAllUrls.get(0).asPostCommentListURL(),
 						R.string.comment_header_search_thread_title
 				);
 
 				mCommentListingManager.addNotification(searchCommentThreadView);
-			} else if(!mAllUrls.isEmpty()
+			} else if (!mAllUrls.isEmpty()
 					&& mAllUrls.get(0).pathType() == RedditURLParser.POST_COMMENT_LISTING_URL
 					&& mAllUrls.get(0).asPostCommentListURL().commentId != null) {
 
@@ -417,27 +429,29 @@ public class CommentListingFragment extends RRFragment
 			}
 
 			// TODO pref (currently 10 mins)
-			if(mCachedTimestamp != null && RRTime.since(mCachedTimestamp) > 10 * 60 * 1000) {
+			if (mCachedTimestamp != null && RRTime.since(mCachedTimestamp) > 10 * 60 * 1000) {
 
 				final TextView cacheNotif = (TextView) LayoutInflater.from(getActivity())
-					.inflate(R.layout.cached_header, null, false);
+						.inflate(R.layout.cached_header, null, false);
 				cacheNotif.setText(getActivity().getString(R.string.listing_cached,
-							RRTime.formatDateTime(mCachedTimestamp, getActivity())));
+						RRTime.formatDateTime(mCachedTimestamp, getActivity())));
 				mCommentListingManager.addNotification(cacheNotif);
 			}
 		}
 	}
 
 	@Override
-	public void onCommentListingRequestAllItemsDownloaded(final ArrayList<RedditCommentListItem> items) {
+	public void onCommentListingRequestAllItemsDownloaded(
+			final ArrayList<RedditCommentListItem> items) {
 
 		mCommentListingManager.addComments(items);
 
 		mUrlsToDownload.removeFirst();
 
-		final LinearLayoutManager layoutManager = (LinearLayoutManager)mRecyclerView.getLayoutManager();
+		final LinearLayoutManager layoutManager =
+				(LinearLayoutManager) mRecyclerView.getLayoutManager();
 
-		if(mPreviousFirstVisibleItemPosition != null
+		if (mPreviousFirstVisibleItemPosition != null
 				&& layoutManager.getItemCount() > mPreviousFirstVisibleItemPosition) {
 
 			layoutManager.scrollToPositionWithOffset(
@@ -447,16 +461,17 @@ public class CommentListingFragment extends RRFragment
 			mPreviousFirstVisibleItemPosition = null;
 		}
 
-		if(mUrlsToDownload.isEmpty()) {
+		if (mUrlsToDownload.isEmpty()) {
 
-			if(mCommentListingManager.getCommentCount() == 0) {
+			if (mCommentListingManager.getCommentCount() == 0) {
 				final View emptyView = LayoutInflater.from(getContext()).inflate(
 						R.layout.no_comments_yet,
 						mRecyclerView,
 						false);
 
 				if (mCommentListingManager.isSearchListing()) {
-					((TextView) emptyView.findViewById(R.id.empty_view_text)).setText(R.string.no_search_results);
+					((TextView) emptyView.findViewById(R.id.empty_view_text)).setText(
+							R.string.no_search_results);
 				}
 
 				mCommentListingManager.addViewToItems(emptyView);
@@ -471,7 +486,8 @@ public class CommentListingFragment extends RRFragment
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu) {
-		if(mAllUrls != null && mAllUrls.size() > 0 && mAllUrls.get(0).pathType() == RedditURLParser.POST_COMMENT_LISTING_URL) {
+		if (mAllUrls != null && mAllUrls.size() > 0 && mAllUrls.get(0).pathType()
+				== RedditURLParser.POST_COMMENT_LISTING_URL) {
 			menu.add(R.string.action_reply);
 		}
 	}
@@ -479,7 +495,7 @@ public class CommentListingFragment extends RRFragment
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 
-		if(item.getTitle() != null
+		if (item.getTitle() != null
 				&& item.getTitle().equals(getActivity().getString(R.string.action_reply))) {
 
 			onParentReply();
@@ -491,10 +507,11 @@ public class CommentListingFragment extends RRFragment
 
 	private void onParentReply() {
 
-		if(mPost != null) {
+		if (mPost != null) {
 			final Intent intent = new Intent(getActivity(), CommentReplyActivity.class);
 			intent.putExtra(CommentReplyActivity.PARENT_ID_AND_TYPE_KEY, mPost.src.getIdAndType());
-			intent.putExtra(CommentReplyActivity.PARENT_MARKDOWN_KEY, mPost.src.getUnescapedSelfText());
+			intent.putExtra(CommentReplyActivity.PARENT_MARKDOWN_KEY,
+					mPost.src.getUnescapedSelfText());
 			startActivity(intent);
 
 		} else {
@@ -503,10 +520,10 @@ public class CommentListingFragment extends RRFragment
 	}
 
 	public void onPostSelected(final RedditPreparedPost post) {
-		((RedditPostView.PostSelectionListener)getActivity()).onPostSelected(post);
+		((RedditPostView.PostSelectionListener) getActivity()).onPostSelected(post);
 	}
 
 	public void onPostCommentsSelected(final RedditPreparedPost post) {
-		((RedditPostView.PostSelectionListener)getActivity()).onPostCommentsSelected(post);
+		((RedditPostView.PostSelectionListener) getActivity()).onPostCommentsSelected(post);
 	}
 }

@@ -21,7 +21,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.ClipboardManager;
 import android.widget.Toast;
 import org.apache.commons.lang3.StringEscapeUtils;

@@ -5,7 +5,7 @@ buildscript {
 		maven { url 'https://maven.fabric.io/public' }
 	}
 	dependencies {
-		classpath 'com.android.tools.build:gradle:3.1.2'
+		classpath 'com.android.tools.build:gradle:3.2.1'
 		classpath "io.fabric.tools:gradle:${fabricPluginVersion}"
 	}
 }
@@ -26,9 +26,10 @@ dependencies {
 	implementation "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
 	implementation "org.apache.commons:commons-lang3:${apacheCommonsVersion}"
 	implementation "joda-time:joda-time:${jodaTimeVersion}"
-	implementation "com.android.support:appcompat-v7:${supportLibVersion}"
-	implementation "com.android.support:recyclerview-v7:${supportLibVersion}"
-	implementation "com.android.support:design:${supportLibVersion}"
+	implementation "androidx.appcompat:appcompat:${androidXAppCompatVersion}"
+	implementation "com.google.android.material:material:${androidXMaterialDesignVersion}"
+	implementation "androidx.recyclerview:recyclerview:${androidXRecyclerViewVersion}"
+
 	implementation "com.squareup.okhttp:okhttp:${okHttpVersion}"
 	implementation "info.guardianproject.netcipher:netcipher:${netCipherVersion}"
 

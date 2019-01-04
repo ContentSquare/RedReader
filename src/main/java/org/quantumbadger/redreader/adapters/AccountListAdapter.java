@@ -23,8 +23,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
+
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +39,8 @@ import org.quantumbadger.redreader.viewholders.VH;
 import org.quantumbadger.redreader.viewholders.VH1Text;
 
 import java.util.ArrayList;
+
+import androidx.fragment.app.Fragment;
 
 public class AccountListAdapter extends HeaderRecyclerAdapter<VH> {
 

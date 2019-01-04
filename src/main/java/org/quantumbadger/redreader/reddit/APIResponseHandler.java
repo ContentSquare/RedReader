@@ -17,7 +17,7 @@
 
 package org.quantumbadger.redreader.reddit;
 
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import org.quantumbadger.redreader.activities.BugReportActivity;
 import org.quantumbadger.redreader.cache.CacheRequest;
 import org.quantumbadger.redreader.common.RRError;

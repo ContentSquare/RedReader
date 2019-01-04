@@ -22,15 +22,17 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDialogFragment;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+
 import org.quantumbadger.redreader.R;
 import org.quantumbadger.redreader.common.General;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDialogFragment;
 
 public abstract class PropertiesDialog extends AppCompatDialogFragment {
 
@@ -40,6 +42,7 @@ public abstract class PropertiesDialog extends AppCompatDialogFragment {
 	private volatile boolean alreadyCreated = false;
 
 	protected abstract String getTitle(Context context);
+
 	protected abstract void prepare(AppCompatActivity context, LinearLayout items);
 
 	@NonNull
@@ -47,12 +50,12 @@ public abstract class PropertiesDialog extends AppCompatDialogFragment {
 	public final Dialog onCreateDialog(final Bundle savedInstanceState) {
 		super.onCreateDialog(savedInstanceState);
 
-		if(alreadyCreated) return getDialog();
+		if (alreadyCreated) return getDialog();
 		alreadyCreated = true;
 
-		final AppCompatActivity context = (AppCompatActivity)getActivity();
+		final AppCompatActivity context = (AppCompatActivity) getActivity();
 
-		final TypedArray attr = context.obtainStyledAttributes(new int[] {
+		final TypedArray attr = context.obtainStyledAttributes(new int[]{
 				R.attr.rrListHeaderTextCol,
 				R.attr.rrListDividerCol,
 				R.attr.rrMainTextCol
@@ -81,23 +84,26 @@ public abstract class PropertiesDialog extends AppCompatDialogFragment {
 		return builder.create();
 	}
 
-	protected final LinearLayout propView(final Context context, final int titleRes, final int textRes, final boolean firstInList) {
+	protected final LinearLayout propView(final Context context, final int titleRes,
+			final int textRes, final boolean firstInList) {
 		return propView(context, context.getString(titleRes), getString(textRes), firstInList);
 	}
 
-	protected final LinearLayout propView(final Context context, final int titleRes, final CharSequence text, final boolean firstInList) {
+	protected final LinearLayout propView(final Context context, final int titleRes,
+			final CharSequence text, final boolean firstInList) {
 		return propView(context, context.getString(titleRes), text, firstInList);
 	}
 
 	// TODO xml?
-	protected final LinearLayout propView(final Context context, final String title, final CharSequence text, final boolean firstInList) {
+	protected final LinearLayout propView(final Context context, final String title,
+			final CharSequence text, final boolean firstInList) {
 
 		final int paddingPixels = General.dpToPixels(context, 12);
 
 		final LinearLayout prop = new LinearLayout(context);
 		prop.setOrientation(LinearLayout.VERTICAL);
 
-		if(!firstInList) {
+		if (!firstInList) {
 			final View divider = new View(context);
 			divider.setMinimumHeight(General.dpToPixels(context, 1));
 			divider.setBackgroundColor(rrListDividerCol);

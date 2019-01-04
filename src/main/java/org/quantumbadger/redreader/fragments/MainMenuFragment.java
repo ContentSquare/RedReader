@@ -21,10 +21,8 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.annotation.IntDef;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
+
 import org.quantumbadger.redreader.R;
 import org.quantumbadger.redreader.account.RedditAccount;
 import org.quantumbadger.redreader.account.RedditAccountManager;
@@ -46,6 +44,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.Collection;
 import java.util.HashSet;
 
+import androidx.annotation.IntDef;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+
 public class MainMenuFragment extends RRFragment
 		implements MainMenuSelectionListener,
 		RedditSubredditSubscriptionManager.SubredditSubscriptionStateChangeListener,
@@ -62,16 +64,7 @@ public class MainMenuFragment extends RRFragment
 	public static final int MENU_MENU_ACTION_HIDDEN = 8;
 	public static final int MENU_MENU_ACTION_CUSTOM = 9;
 	public static final int MENU_MENU_ACTION_ALL = 10;
-
-	@IntDef({MENU_MENU_ACTION_FRONTPAGE, MENU_MENU_ACTION_PROFILE, MENU_MENU_ACTION_INBOX,
-		MENU_MENU_ACTION_SUBMITTED, MENU_MENU_ACTION_UPVOTED, MENU_MENU_ACTION_DOWNVOTED,
-		MENU_MENU_ACTION_SAVED, MENU_MENU_ACTION_MODMAIL, MENU_MENU_ACTION_HIDDEN,
-		MENU_MENU_ACTION_CUSTOM, MENU_MENU_ACTION_ALL})
-	@Retention(RetentionPolicy.SOURCE)
-	public @interface MainMenuAction {}
-
 	private final MainMenuListingManager mManager;
-
 	private final View mOuter;
 
 	public MainMenuFragment(
@@ -84,7 +77,8 @@ public class MainMenuFragment extends RRFragment
 
 		final RedditAccount user = RedditAccountManager.getInstance(context).getDefaultAccount();
 
-		ScrollbarRecyclerViewManager recyclerViewManager = new ScrollbarRecyclerViewManager(parent, null, false);
+		ScrollbarRecyclerViewManager recyclerViewManager = new ScrollbarRecyclerViewManager(parent,
+				null, false);
 
 		mOuter = recyclerViewManager.getOuterView();
 		final RecyclerView recyclerView = recyclerViewManager.getRecyclerView();
@@ -113,54 +107,55 @@ public class MainMenuFragment extends RRFragment
 		final RedditSubredditSubscriptionManager subredditSubscriptionManager
 				= RedditSubredditSubscriptionManager.getSingleton(context, user);
 
-		if(force) {
-			multiredditSubscriptionManager.triggerUpdate(new RequestResponseHandler<HashSet<String>, SubredditRequestFailure>() {
-				@Override
-				public void onRequestFailed(SubredditRequestFailure failureReason) {
-					onMultiredditError(failureReason.asError(context));
-				}
+		if (force) {
+			multiredditSubscriptionManager.triggerUpdate(
+					new RequestResponseHandler<HashSet<String>, SubredditRequestFailure>() {
+						@Override
+						public void onRequestFailed(SubredditRequestFailure failureReason) {
+							onMultiredditError(failureReason.asError(context));
+						}
 
-				@Override
-				public void onRequestSuccess(HashSet<String> result, long timeCached) {
-					multiredditSubscriptionManager.addListener(MainMenuFragment.this);
-					onMultiredditSubscriptionsChanged(result);
-				}
-			}, TimestampBound.NONE);
+						@Override
+						public void onRequestSuccess(HashSet<String> result, long timeCached) {
+							multiredditSubscriptionManager.addListener(MainMenuFragment.this);
+							onMultiredditSubscriptionsChanged(result);
+						}
+					}, TimestampBound.NONE);
 
-			subredditSubscriptionManager.triggerUpdate(new RequestResponseHandler<HashSet<String>, SubredditRequestFailure>() {
-				@Override
-				public void onRequestFailed(SubredditRequestFailure failureReason) {
-					onSubredditError(failureReason.asError(context));
-				}
+			subredditSubscriptionManager.triggerUpdate(
+					new RequestResponseHandler<HashSet<String>, SubredditRequestFailure>() {
+						@Override
+						public void onRequestFailed(SubredditRequestFailure failureReason) {
+							onSubredditError(failureReason.asError(context));
+						}
 
-				@Override
-				public void onRequestSuccess(HashSet<String> result, long timeCached) {
-					subredditSubscriptionManager.addListener(MainMenuFragment.this);
-					onSubredditSubscriptionsChanged(result);
-				}
-			}, TimestampBound.NONE);
+						@Override
+						public void onRequestSuccess(HashSet<String> result, long timeCached) {
+							subredditSubscriptionManager.addListener(MainMenuFragment.this);
+							onSubredditSubscriptionsChanged(result);
+						}
+					}, TimestampBound.NONE);
 
 		} else {
 
 			multiredditSubscriptionManager.addListener(this);
 			subredditSubscriptionManager.addListener(this);
 
-			if(multiredditSubscriptionManager.areSubscriptionsReady()) {
-				onMultiredditSubscriptionsChanged(multiredditSubscriptionManager.getSubscriptionList());
+			if (multiredditSubscriptionManager.areSubscriptionsReady()) {
+				onMultiredditSubscriptionsChanged(
+						multiredditSubscriptionManager.getSubscriptionList());
 			}
 
-			if(subredditSubscriptionManager.areSubscriptionsReady()) {
-				onSubredditSubscriptionsChanged(subredditSubscriptionManager.getSubscriptionList());
+			if (subredditSubscriptionManager.areSubscriptionsReady()) {
+				onSubredditSubscriptionsChanged(subredditSubscriptionManager.getSubscriptionList
+						());
 			}
 
-			final TimestampBound.MoreRecentThanBound oneHour = TimestampBound.notOlderThan(1000 * 60 * 60);
+			final TimestampBound.MoreRecentThanBound oneHour = TimestampBound.notOlderThan(
+					1000 * 60 * 60);
 			multiredditSubscriptionManager.triggerUpdate(null, oneHour);
 			subredditSubscriptionManager.triggerUpdate(null, oneHour);
 		}
-	}
-
-	public enum MainMenuUserItems {
-		PROFILE, INBOX, SUBMITTED, SAVED, HIDDEN, UPVOTED, DOWNVOTED, MODMAIL
 	}
 
 	@Override
@@ -191,29 +186,45 @@ public class MainMenuFragment extends RRFragment
 
 	@Override
 	public void onSelected(final @MainMenuAction int type) {
-		((MainMenuSelectionListener)getActivity()).onSelected(type);
+		((MainMenuSelectionListener) getActivity()).onSelected(type);
 	}
 
 	@Override
 	public void onSelected(final PostListingURL postListingURL) {
-		((MainMenuSelectionListener)getActivity()).onSelected(postListingURL);
+		((MainMenuSelectionListener) getActivity()).onSelected(postListingURL);
 	}
 
 	@Override
-	public void onSubredditSubscriptionListUpdated(RedditSubredditSubscriptionManager subredditSubscriptionManager) {
+	public void onSubredditSubscriptionListUpdated(
+			RedditSubredditSubscriptionManager subredditSubscriptionManager) {
 		onSubredditSubscriptionsChanged(subredditSubscriptionManager.getSubscriptionList());
 	}
 
 	@Override
-	public void onMultiredditListUpdated(final RedditMultiredditSubscriptionManager multiredditSubscriptionManager) {
+	public void onMultiredditListUpdated(
+			final RedditMultiredditSubscriptionManager multiredditSubscriptionManager) {
 		onMultiredditSubscriptionsChanged(multiredditSubscriptionManager.getSubscriptionList());
 	}
 
 	@Override
-	public void onSubredditSubscriptionAttempted(RedditSubredditSubscriptionManager subredditSubscriptionManager) {
+	public void onSubredditSubscriptionAttempted(
+			RedditSubredditSubscriptionManager subredditSubscriptionManager) {
 	}
 
 	@Override
-	public void onSubredditUnsubscriptionAttempted(RedditSubredditSubscriptionManager subredditSubscriptionManager) {
+	public void onSubredditUnsubscriptionAttempted(
+			RedditSubredditSubscriptionManager subredditSubscriptionManager) {
+	}
+
+	public enum MainMenuUserItems {
+		PROFILE, INBOX, SUBMITTED, SAVED, HIDDEN, UPVOTED, DOWNVOTED, MODMAIL
+	}
+
+	@IntDef({MENU_MENU_ACTION_FRONTPAGE, MENU_MENU_ACTION_PROFILE, MENU_MENU_ACTION_INBOX,
+			MENU_MENU_ACTION_SUBMITTED, MENU_MENU_ACTION_UPVOTED, MENU_MENU_ACTION_DOWNVOTED,
+			MENU_MENU_ACTION_SAVED, MENU_MENU_ACTION_MODMAIL, MENU_MENU_ACTION_HIDDEN,
+			MENU_MENU_ACTION_CUSTOM, MENU_MENU_ACTION_ALL})
+	@Retention(RetentionPolicy.SOURCE)
+	public @interface MainMenuAction {
 	}
 }

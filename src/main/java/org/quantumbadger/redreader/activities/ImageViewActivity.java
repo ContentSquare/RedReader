@@ -26,7 +26,7 @@ import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -66,6 +66,8 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.UUID;
 
+import androidx.annotation.Nullable;
+
 public class ImageViewActivity extends BaseActivity implements RedditPostView.PostSelectionListener, ImageViewDisplayListManager.Listener {
 
 	private static final String TAG = "ImageViewActivity";
@@ -98,7 +100,8 @@ public class ImageViewActivity extends BaseActivity implements RedditPostView.Po
 
 	private int mGallerySwipeLengthPx;
 
-	@Nullable private LinearLayout mFloatingToolbar;
+	@Nullable
+	private LinearLayout mFloatingToolbar;
 
 	@Override
 	protected boolean baseActivityIsToolbarActionBarEnabled() {

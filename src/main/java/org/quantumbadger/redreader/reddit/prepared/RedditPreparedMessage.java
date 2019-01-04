@@ -20,7 +20,7 @@ package org.quantumbadger.redreader.reddit.prepared;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.TypedArray;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.SpannableStringBuilder;
 import android.view.View;
 import org.apache.commons.lang3.StringEscapeUtils;
