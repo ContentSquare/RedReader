@@ -1,52 +1,33 @@
-buildscript {
-	repositories {
-		google()
-		jcenter()
-		maven { url 'https://maven.fabric.io/public' }
-	}
-	dependencies {
-		classpath 'com.android.tools.build:gradle:3.3.2'
-		classpath "io.fabric.tools:gradle:${fabricPluginVersion}"
-	}
-}
-
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 apply plugin: 'pmd'
 
-repositories {
-	jcenter()
-	maven { url 'https://maven.fabric.io/public' }
+buildscript {
+	repositories {
+		maven { url 'https://maven.fabric.io/public' }
+	}
+	dependencies {
+		classpath "io.fabric.tools:gradle:${fabricPluginVersion}"
+	}
 }
 
-dependencies {
-
-	implementation project(':library')
-	implementation "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
-	implementation "org.apache.commons:commons-lang3:${apacheCommonsVersion}"
-	implementation "joda-time:joda-time:${jodaTimeVersion}"
-	implementation "androidx.appcompat:appcompat:${androidXAppCompatVersion}"
-	implementation "com.google.android.material:material:${androidXMaterialDesignVersion}"
-	implementation "androidx.recyclerview:recyclerview:${androidXRecyclerViewVersion}"
-
-	implementation "com.squareup.okhttp:okhttp:${okHttpVersion}"
-	implementation "info.guardianproject.netcipher:netcipher:${netCipherVersion}"
-
-	testImplementation "junit:junit:${jUnitVersion}"
-	implementation("com.crashlytics.sdk.android:crashlytics:${crashlyticsVersion}@aar") {
-		transitive = true
-	}
+repositories {
+	maven { url 'https://maven.fabric.io/public' }
 }
 
 android {
 	compileSdkVersion rootProject.compileSdkVersion
 
+	def keystorePropertiesFile =  rootProject.file("$rootDir/config/keystore.properties")
+	def keystoreProperties = new Properties()
+	keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
 	signingConfigs {
 		release {
-			storeFile file("${rootDir}/config/keystore/shared-keystore.jks")
-			storePassword "Weballwin"
-			keyAlias "Jenkins"
-			keyPassword "Weballwin"
+			storePassword keystoreProperties["storePassword"]
+			keyAlias keystoreProperties["keyAlias"]
+			keyPassword keystoreProperties["keyPassword"]
+			storeFile file("$rootDir/${keystoreProperties["storeFile"]}")
 		}
 	}
 	buildTypes {
@@ -59,7 +40,7 @@ android {
 
 	defaultConfig {
 		minSdkVersion 16
-		targetSdkVersion 26
+		targetSdkVersion rootProject.targetSdkVersion
 		vectorDrawables.generatedDensities = ['mdpi', 'hdpi', 'xhdpi', 'xxhdpi', 'xxxhdpi']
 	}
 	// Flag to tell aapt to keep the attribute ids around
@@ -98,6 +79,25 @@ android {
 		main {
 			assets.srcDirs = ['assets']
 		}
+	}
+}
+
+dependencies {
+
+	implementation project(':library')
+	implementation "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
+	implementation "org.apache.commons:commons-lang3:${apacheCommonsVersion}"
+	implementation "joda-time:joda-time:${jodaTimeVersion}"
+	implementation "androidx.appcompat:appcompat:${androidXAppCompatVersion}"
+	implementation "com.google.android.material:material:${androidXMaterialDesignVersion}"
+	implementation "androidx.recyclerview:recyclerview:${androidXRecyclerViewVersion}"
+
+	implementation "com.squareup.okhttp:okhttp:${okHttpVersion}"
+	implementation "info.guardianproject.netcipher:netcipher:${netCipherVersion}"
+
+	testImplementation "junit:junit:${jUnitVersion}"
+	implementation("com.crashlytics.sdk.android:crashlytics:${crashlyticsVersion}@aar") {
+		transitive = true
 	}
 }
 
