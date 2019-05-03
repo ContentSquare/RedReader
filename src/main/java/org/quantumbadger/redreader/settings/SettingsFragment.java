@@ -35,6 +35,7 @@ import android.text.Html;
 
 import com.contentsquare.android.ContentSquare;
 
+import com.contentsquare.android.internal.model.data.CustomScreenView;
 import org.quantumbadger.redreader.BuildConfig;
 import org.quantumbadger.redreader.R;
 import org.quantumbadger.redreader.activities.ChangelogActivity;
@@ -105,6 +106,8 @@ public final class SettingsFragment extends PreferenceFragment {
 		final int[] editTextPrefsToUpdate = {
 				R.string.pref_behaviour_comment_min_key
 		};
+
+		ContentSquare.send("TEST_SettingFRAG");
 
 		for (int pref : listPrefsToUpdate) {
 
