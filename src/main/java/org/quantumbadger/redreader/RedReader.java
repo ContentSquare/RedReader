@@ -43,7 +43,7 @@ public class RedReader extends Application {
 		super.onCreate();
 		Fabric.with(this, new Crashlytics());
 
-//		ContentSquare.startWithProjectId(getApplicationContexlt(), "redreaderapp");
+//		Contentsquare.startWithProjectId(getApplicationContexlt(), "redreaderapp");
 //		Log.i("RedReader", "Application created.");
 
 		final Thread.UncaughtExceptionHandler androidHandler =

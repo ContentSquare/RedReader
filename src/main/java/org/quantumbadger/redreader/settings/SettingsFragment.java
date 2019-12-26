@@ -33,9 +33,8 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.text.Html;
 
-import com.contentsquare.android.ContentSquare;
+import com.contentsquare.android.Contentsquare;
 
-import com.contentsquare.android.internal.model.data.CustomScreenView;
 import org.quantumbadger.redreader.BuildConfig;
 import org.quantumbadger.redreader.R;
 import org.quantumbadger.redreader.activities.ChangelogActivity;
@@ -107,7 +106,7 @@ public final class SettingsFragment extends PreferenceFragment {
 				R.string.pref_behaviour_comment_min_key
 		};
 
-		ContentSquare.send("TEST_SettingFRAG");
+		Contentsquare.send("TEST_SettingFRAG");
 
 		for (int pref : listPrefsToUpdate) {
 
@@ -217,9 +216,9 @@ public final class SettingsFragment extends PreferenceFragment {
 
 					boolean isOptedOut = (Boolean) newValue;
 					if (isOptedOut) {
-						ContentSquare.optOut(getActivity());
+						Contentsquare.optOut(getActivity());
 					} else {
-						ContentSquare.optIn(getActivity());
+						Contentsquare.optIn(getActivity());
 					}
 
 					return true;
@@ -232,7 +231,7 @@ public final class SettingsFragment extends PreferenceFragment {
 				@Override
 				public boolean onPreferenceChange(Preference preference, final Object newValue) {
 
-					ContentSquare.forgetMe();
+					Contentsquare.forgetMe();
 
 					return true;
 				}
@@ -244,7 +243,7 @@ public final class SettingsFragment extends PreferenceFragment {
 				@Override
 				public boolean onPreferenceClick(Preference preference) {
 
-					getUserIdPref.setTitle(ContentSquare.getUserId());
+					getUserIdPref.setTitle(Contentsquare.getUserId());
 					return false;
 				}
 			});
