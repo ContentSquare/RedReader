@@ -18,7 +18,7 @@ repositories {
 android {
 	compileSdkVersion rootProject.compileSdkVersion
 
-	def keystorePropertiesFile =  rootProject.file("$rootDir/config/keystore.properties")
+	def keystorePropertiesFile = rootProject.file("$rootDir/config/keystore.properties")
 	def keystoreProperties = new Properties()
 	keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
@@ -85,6 +85,7 @@ android {
 dependencies {
 
 	implementation project(':library')
+	implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 	implementation "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
 	implementation "org.apache.commons:commons-lang3:${apacheCommonsVersion}"
 	implementation "joda-time:joda-time:${jodaTimeVersion}"
